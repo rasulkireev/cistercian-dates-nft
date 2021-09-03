@@ -11,8 +11,8 @@ end_date = date(2021,2,1)
 def generate_random_color(date):
   date
   r = lambda: random.randint(0,255)
-  color = (f'{r()},{r()},{r()},{r()}')
-  return eval(color)
+  color = (r(),r(),r(),r())
+  return color
 
 def parse_date(date: date)->Tuple:
   day = str(date.day)
