@@ -9,7 +9,7 @@ start_date = date(2021,1,1)
 end_date = date(2021,2,1)
 
 def generate_random_color(date):
-  date
+  random.seed(date.strftime("%Y%m%d"))
   r = lambda: random.randint(0,255)
   color = (r(),r(),r(),r())
   return color
@@ -93,18 +93,17 @@ def compose_final_image(images, color):
   starting_xpoint = int(width * 0.25)
 
   canvas = Image.new("RGBA", (width, height), color = color)
-  for image in images:
+  for count, image in enumerate(images):
     image = transparent_to_opaque_bg(image, color)
     image_width, image_height = image.size
     enlarged_image = image.resize((image_width*2,image_height*2))
     enlarged_image_width, enlarged_image_height = enlarged_image.size
 
-    index = images.index(image)
-    if index == 0:
+    if count == 0:
       pastex = starting_xpoint
       pastey = int(height / 2) - int(enlarged_image_height/2)
     else:
-      pastex = starting_xpoint + int(width/5 * index)
+      pastex = starting_xpoint + int(width/5 * count)
       pastey = int(height / 2) - int(enlarged_image_height/2)
 
     canvas.paste(enlarged_image, box = (pastex, pastey), mask=0)
@@ -131,7 +130,6 @@ def main():
         result = composer_numeral_image(number_string_2_integers(decomposition))
         images.append(result)
       color = generate_random_color(date)
-      print(color)
       result = compose_final_image(images, color)
       save_image(result, '-'.join(elements))
 
