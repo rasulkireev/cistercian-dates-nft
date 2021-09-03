@@ -1,5 +1,5 @@
 import os
-import sys
+import random
 from datetime import date, timedelta
 from typing import Tuple
 from PIL import Image, ImageOps
@@ -7,6 +7,12 @@ from PIL import Image, ImageOps
 
 start_date = date(2021,1,1)
 end_date = date(2021,2,1)
+
+def generate_random_color(date):
+  date
+  r = lambda: random.randint(0,255)
+  color = (f'{r()},{r()},{r()},{r()}')
+  return eval(color)
 
 def parse_date(date: date)->Tuple:
   day = str(date.day)
@@ -73,31 +79,32 @@ def composer_numeral_image(decomposition):
 
     return out
 
-def transparent_to_white_bg(image):
+def transparent_to_opaque_bg(image, color):
   pixels = image.load()
   for y in range(image.size[1]):
       for x in range(image.size[0]):
           if pixels[x,y][3] < 255:
-              pixels[x,y] = (255, 255, 255, 255)
+              pixels[x,y] = color
   return image
 
-def compose_final_image(images):
+def compose_final_image(images, color):
   # Twitter Header
   width, height = 1500, 500
+  starting_xpoint = int(width * 0.25)
 
-  canvas = Image.new("RGBA", (width, height), color = (255, 255, 255))
+  canvas = Image.new("RGBA", (width, height), color = color)
   for image in images:
-    image = transparent_to_white_bg(image)
+    image = transparent_to_opaque_bg(image, color)
     image_width, image_height = image.size
     enlarged_image = image.resize((image_width*2,image_height*2))
     enlarged_image_width, enlarged_image_height = enlarged_image.size
 
     index = images.index(image)
-    if index==0:
-      pastex = int(width * 0.3) + int(width/3 * index)
+    if index == 0:
+      pastex = starting_xpoint
       pastey = int(height / 2) - int(enlarged_image_height/2)
     else:
-      pastex = int(width * 0.3) + int(width/3 * index)
+      pastex = starting_xpoint + int(width/5 * index)
       pastey = int(height / 2) - int(enlarged_image_height/2)
 
     canvas.paste(enlarged_image, box = (pastex, pastey), mask=0)
@@ -123,7 +130,9 @@ def main():
         decomposition = get_number_decomposition(element)
         result = composer_numeral_image(number_string_2_integers(decomposition))
         images.append(result)
-      result = compose_final_image(images)
+      color = generate_random_color(date)
+      print(color)
+      result = compose_final_image(images, color)
       save_image(result, '-'.join(elements))
 
       date += timedelta(days=1)
