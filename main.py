@@ -93,8 +93,13 @@ def compose_final_image(images):
     enlarged_image_width, enlarged_image_height = enlarged_image.size
 
     index = images.index(image)
-    pastex = int(width * 0.1) + int(width/3 * index)
-    pastey = int(height / 2) - int(enlarged_image_height/2)
+    if index==0:
+      pastex = int(width * 0.3) + int(width/3 * index)
+      pastey = int(height / 2) - int(enlarged_image_height/2)
+    else:
+      pastex = int(width * 0.3) + int(width/3 * index)
+      pastey = int(height / 2) - int(enlarged_image_height/2)
+
     canvas.paste(enlarged_image, box = (pastex, pastey), mask=0)
 
   return canvas
