@@ -1,18 +1,19 @@
 import os
 import sys
-from datetime import date
+from datetime import date, timedelta
 from typing import Tuple
-from PIL import Image, ImageOps, ImageDraw, ImageFont
+from PIL import Image, ImageOps
 
 
-# Limits determined by the Cistercian numeral system
-LOWER_LIMIT = 0
-UPPER_LIMIT = 9999
+start_date = date(2021,1,1)
+end_date = date(2021,2,1)
 
 def parse_date(date: date)->Tuple:
   day = str(date.day)
   month = str(date.month)
-  return [month, day]
+  year = str(date.year)
+
+  return [year, month, day]
 
 def get_number_decomposition(number_string):
     """Decomposes the number in its digits.
@@ -80,19 +81,21 @@ def transparent_to_white_bg(image):
               pixels[x,y] = (255, 255, 255, 255)
   return image
 
-def compose_final_image(image):
+def compose_final_image(images):
   # Twitter Header
   width, height = 1500, 500
 
-  image = transparent_to_white_bg(image)
-
-  image_width, image_height = image.size
-  enlarged_image = image.resize((image_width*2,image_height*2))
-  enlarged_image_width, enlarged_image_height = enlarged_image.size
   canvas = Image.new("RGBA", (width, height), color = (255, 255, 255))
-  pastex = int(width / 2) - int(enlarged_image_width/2)
-  pastey = int(height / 2) - int(enlarged_image_height/2)
-  canvas.paste(enlarged_image, box = (pastex, pastey), mask=0)
+  for image in images:
+    image = transparent_to_white_bg(image)
+    image_width, image_height = image.size
+    enlarged_image = image.resize((image_width*2,image_height*2))
+    enlarged_image_width, enlarged_image_height = enlarged_image.size
+
+    index = images.index(image)
+    pastex = int(width * 0.1) + int(width/3 * index)
+    pastey = int(height / 2) - int(enlarged_image_height/2)
+    canvas.paste(enlarged_image, box = (pastex, pastey), mask=0)
 
   return canvas
 
@@ -106,18 +109,19 @@ def save_image(image, name):
 
 
 def main():
-    """Entry point of the program.
-    """
-    elements = parse_date(date.today())
+    date = start_date
 
-    for element in elements:
-      decomposition = get_number_decomposition(element)
-      result = compose_final_image(
-        composer_numeral_image(number_string_2_integers(decomposition))
-      )
-      print(result)
-      save_image(result, element)
+    while date <= end_date:
+      elements = parse_date(date)
+      images = []
+      for element in elements:
+        decomposition = get_number_decomposition(element)
+        result = composer_numeral_image(number_string_2_integers(decomposition))
+        images.append(result)
+      result = compose_final_image(images)
+      save_image(result, '-'.join(elements))
 
+      date += timedelta(days=1)
 
 if __name__ == "__main__":
     main()
