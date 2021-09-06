@@ -1,12 +1,8 @@
 import os
 import random
-from datetime import date, timedelta
-from typing import Tuple
+from datetime import date
 from PIL import Image, ImageOps
-import time
 
-start_date = date(2020,1,1)
-end_date = date(2021,2,1)
 
 def generate_random_color(date):
   random.seed(date.strftime("%Y%m%d"))
@@ -14,7 +10,7 @@ def generate_random_color(date):
   color = (r(),r(),r())
   return color
 
-def parse_date(date: date)->Tuple:
+def parse_date(date: date):
   day = str(date.day)
   month = str(date.month)
   year = str(date.year)
@@ -34,7 +30,6 @@ def get_number_decomposition(number_string):
             decomposition.append(number_string[len(number_string) - (i + 1)])
     return decomposition
 
-
 def number_string_2_integers(_list):
     """Gets a list of strings and returns a list of the correspondant integers.
     Returns the translated list.
@@ -46,17 +41,6 @@ def number_string_2_integers(_list):
 
 
 def composer_numeral_image(decomposition):
-    """Creates the image through alpha composition.
-    First it set the base image common to all numerals.
-    After that, it checks each position (units, tens, hundreds, thousands) to
-    add it correspondant image.
-    'Units' images are the base ones.
-    'Tens' images are a mirror over the 'units'.
-    'Hundreds' images are a flip over the 'units'.
-    'Thousands' images are a mirror of a flip over the 'units'.
-    Returns an Image object.
-    """
-    # Convert images on load to RGBA to make sure all image modes are the same
     out = Image.open('img/digit0.png').convert('RGBA')
     units_images = []
 
@@ -84,59 +68,34 @@ def transparent_to_opaque_bg(image, color):
   for y in range(image.size[1]):
       for x in range(image.size[0]):
           if pixels[x,y][3] < 255:
-              pixels[x,y] = color
+              # pixels[x,y] = color
+              pixels[x,y] = (255, 255, 255)
   return image
 
 def compose_final_image(images, color):
-  # Twitter Header
-  width, height = 1500, 500
-  starting_xpoint = int(width * 0.25)
+  width, height = 750, 500
 
-  canvas = Image.new("RGBA", (width, height), color = color)
+  # canvas = Image.new("RGBA", (width, height), color = color)
+  canvas = Image.new("RGBA", (width, height), color = (255, 255, 255))
   for count, image in enumerate(images):
     image = transparent_to_opaque_bg(image, color)
     image_width, image_height = image.size
-    enlarged_image = image.resize((image_width*2,image_height*2))
-    enlarged_image_width, enlarged_image_height = enlarged_image.size
+    image = image.resize((image_width*2,image_height*2))
+    image_width, image_height = image.size
 
     if count == 0:
-      pastex = starting_xpoint
-      pastey = int(height / 2) - int(enlarged_image_height/2)
+      pastex = int(width/3 * count) + 65
+      pastey = int(height / 2) - int(image_height/2)
     else:
-      pastex = starting_xpoint + int(width/5 * count)
-      pastey = int(height / 2) - int(enlarged_image_height/2)
+      pastex = int(width/3 * count)
+      pastey = int(height / 2) - int(image_height/2)
 
-    canvas.paste(enlarged_image, box = (pastex, pastey), mask=0)
+    canvas.paste(image, box = (pastex, pastey), mask=0)
 
   return canvas
 
 def save_image(image, name):
-    """Saves the image to the output folder.
-    """
-    output_folder_name = "output"
+    output_folder_name = "../images"
     if not os.path.exists(output_folder_name):
         os.mkdir(output_folder_name)
     image.save("{}/{}.png".format(output_folder_name, name))
-
-
-def main():
-    date = start_date
-
-    while date <= end_date:
-      elements = parse_date(date)
-      images = []
-      for element in elements:
-        decomposition = get_number_decomposition(element)
-        result = composer_numeral_image(number_string_2_integers(decomposition))
-        images.append(result)
-      color = generate_random_color(date)
-      result = compose_final_image(images, color)
-      save_image(result, '-'.join(elements))
-
-      date += timedelta(days=1)
-
-if __name__ == "__main__":
-    startTime = time.time()
-    main()
-    executionTime = (time.time() - startTime)
-    print(f'Generated {(end_date - start_date).days} images in {executionTime} seconds')
