@@ -17,7 +17,7 @@ def main():
 
     project_root = get_project_root()
     start_date = date(1,1,1)
-    end_date = date(1,1,2)
+    end_date = date(100,1,1)
 
     current_date = start_date
 
@@ -43,7 +43,7 @@ def main():
       executionTime = (time.time() - startTime)
       date_diff = (end_date - current_date).days
       time_left = (executionTime * date_diff)
-      print(f"File #{count} done. {date_diff} left. Estimated time: { time_left / 60 / 24 } / {time_left / 60} minutes / { time_left } seconds")
+      print(f"File #{count} done. {date_diff} left. Estimated time: { time_left / 60 / 60 } / {time_left / 60} minutes / { time_left } seconds")
 
       count += 1
       current_date += timedelta(days=1)
