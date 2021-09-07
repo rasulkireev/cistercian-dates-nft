@@ -13,14 +13,23 @@ def create_and_save_metadata_file(current_date, pinata_response):
     day_of_the_month = ordinal(current_date.day)
 
     metadata.update({
-      'attributes': [{
-        "year": current_date.strftime('%Y'),
-        "month": current_date.strftime('%B'),
-        "day": day_of_the_month
-      }],
       'name': f"{current_date.strftime('%B')} {day_of_the_month}, {current_date.strftime('%Y')}",
       'description': f'NFT for the {day_of_the_month} of { current_date.strftime("%B %Y") } in Cistercian numerals.',
-      'image': f"https://gateway.pinata.cloud/ipfs/{pinata_response['IpfsHash']}"
+      'image': f"https://gateway.pinata.cloud/ipfs/{pinata_response['IpfsHash']}",
+      'attributes': [
+        {
+          "trait_type": "Year",
+          "value": current_date.strftime('%Y')
+        },
+        {
+          "trait_type": "Month",
+          "value": current_date.strftime('%B')
+        },
+        {
+          "trait_type": "Day",
+          "value": day_of_the_month
+        }
+      ]
     })
 
     save_metadata_file(metadata, file_name)
