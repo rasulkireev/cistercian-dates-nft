@@ -5,7 +5,7 @@ import os
 import json
 import random
 from datetime import date
-from PIL import Image, ImageOps
+import time
 
 def get_project_root() -> Path:
     return Path(__file__).parent.parent
@@ -76,3 +76,38 @@ def save_metadata_file(metadata_dictionary, file_name):
     with open(f"{file_location}/{file_name}", 'a', encoding="utf-8") as file:
       json_obj = json.dumps(metadata_dictionary)
       file.write(json_obj)
+
+def list_Pinata_files():
+  PINATA_BASE_URL = 'https://api.pinata.cloud/'
+  ENDPOINT = 'data/pinList?pageLimit=1000&status=pinned'
+
+  headers = {
+    'pinata_api_key': os.getenv('PINATA_API_KEY'),
+    'pinata_secret_api_key': os.getenv('PINATA_API_SECRET')
+  }
+
+  response = requests.get(
+    PINATA_BASE_URL + ENDPOINT,
+    headers=headers
+  )
+
+  return response.json()
+
+def remove_all_files_from_Pinata():
+    PINATA_BASE_URL = 'https://api.pinata.cloud/'
+    ENDPOINT = 'pinning/unpin/'
+
+    headers = {
+      'pinata_api_key': os.getenv('PINATA_API_KEY'),
+      'pinata_secret_api_key': os.getenv('PINATA_API_SECRET')
+    }
+
+    files = list_Pinata_files()
+
+    for file in files['rows']:
+        response = requests.delete(
+          PINATA_BASE_URL + ENDPOINT + file['ipfs_pin_hash'],
+          headers=headers
+        )
+        time.sleep(0.75)
+        print(response.json)
