@@ -7,6 +7,8 @@ import random
 from datetime import date
 import time
 
+PINATA_BASE_URL = 'https://api.pinata.cloud/'
+
 def get_project_root() -> Path:
     return Path(__file__).parent.parent
 
@@ -28,7 +30,7 @@ def transparent_to_opaque_bg(image):
   for y in range(image.size[1]):
       for x in range(image.size[0]):
           if pixels[x,y][3] < 255:
-              pixels[x,y] = (255, 255, 255)
+              pixels[x,y] = (255, 255, 255, 0)
   return image
 
 def save_image(output_folder, file, file_name):
@@ -37,7 +39,6 @@ def save_image(output_folder, file, file_name):
     file.save(f"{file_location}/{file_name}")
 
 def load_file_to_Pinata(file_path, file_name):
-  PINATA_BASE_URL = 'https://api.pinata.cloud/'
   ENDPOINT = 'pinning/pinFileToIPFS'
 
   headers = {
@@ -78,11 +79,10 @@ def save_metadata_file(metadata_dictionary, file_name):
       file.write(json_obj)
 
 def list_Pinata_files():
-  PINATA_BASE_URL = 'https://api.pinata.cloud/'
   ENDPOINT = 'data/pinList?pageLimit=1000&status=pinned'
 
   headers = {
-    'pinata_api_key': os.getenv('PINATA_API_KEY'),
+    'pinata_api_key':os.getenv('PINATA_API_KEY'),
     'pinata_secret_api_key': os.getenv('PINATA_API_SECRET')
   }
 
@@ -94,11 +94,11 @@ def list_Pinata_files():
   return response.json()
 
 def remove_all_files_from_Pinata():
-    PINATA_BASE_URL = 'https://api.pinata.cloud/'
+
     ENDPOINT = 'pinning/unpin/'
 
     headers = {
-      'pinata_api_key': os.getenv('PINATA_API_KEY'),
+      'pinata_api_key':os.getenv('PINATA_API_KEY'),
       'pinata_secret_api_key': os.getenv('PINATA_API_SECRET')
     }
 
@@ -111,3 +111,20 @@ def remove_all_files_from_Pinata():
         )
         time.sleep(0.75)
         print(response.json)
+
+def check_if_NFT_exists(current_date):
+    elements = parse_date(current_date)
+    image_name = '-'.join(elements) + '.png'
+    ENDPOINT = f'data/pinList?metadata[name]={image_name}'
+
+    headers = {
+      'pinata_api_key':os.getenv('PINATA_API_KEY'),
+      'pinata_secret_api_key': os.getenv('PINATA_API_SECRET')
+    }
+
+    response = requests.get(
+      PINATA_BASE_URL + ENDPOINT,
+      headers=headers
+    )
+
+    return response.json()
