@@ -54,7 +54,7 @@ def main():
         # save response hash to a txt file
         with open(f"{project_root}/pinata_hashes.txt", 'a', encoding="utf-8") as file:
           file.write("\n")
-          file.write(response['IpfsHash'])
+          file.write(f"{{{current_date}: {response['IpfsHash']}}},")
 
         response = mintNFT(f"https://gateway.pinata.cloud/ipfs/{response['IpfsHash']}")
         logging.info(f'NFT #{count} is minted. Transaction Address: {response["transactionHash"].hex()}')
