@@ -57,21 +57,19 @@ def composer_numeral_image(decomposition):
     return out
 
 def compose_final_image(images):
-  width, height = 750, 500
+  space_between_images = 50
+  width = (space_between_images * 2) + (186*3)
+  height = 266
 
-  canvas = Image.new("RGBA", (width, height), color = (255, 255, 255))
+  canvas = Image.new("RGBA", (width, height), color = (255, 255, 255, 0))
   for count, image in enumerate(images):
     image = transparent_to_opaque_bg(image)
     image_width, image_height = image.size
     image = image.resize((image_width*2,image_height*2))
     image_width, image_height = image.size
 
-    if count == 0:
-      pastex = int(width/3 * count) + 65
-      pastey = int(height / 2) - int(image_height/2)
-    else:
-      pastex = int(width/3 * count)
-      pastey = int(height / 2) - int(image_height/2)
+    pastex = int(image_width * count) + (space_between_images * count)
+    pastey = 0
 
     canvas.paste(image, box = (pastex, pastey), mask=0)
 
