@@ -3,8 +3,8 @@ async function main() {
   const CistercianDate = await ethers.getContractFactory("CistercianDate");
 
   // Start deployment, returning a promise that resolves to a contract object
-  const cistercianDateNFT = await CistercianDate.deploy(); // Instance of the contract
-  console.log("Contract deployed to address:", cistercianDateNFT.address);
+  const cistercianDateNFTContract = await CistercianDate.deploy(); // Instance of the contract
+  console.log("Contract deployed to address:", cistercianDateNFTContract.address);
 }
 
 main()
