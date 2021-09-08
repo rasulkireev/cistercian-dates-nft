@@ -30,7 +30,7 @@ def main():
 
       NFT_exists = check_if_NFT_exists(current_date)
       if NFT_exists == True:
-        logging.info(f"NFT for {current_date} already exists. Moving on to the next one")
+        logging.info(f"NFT for {current_date} already exists.")
         time.sleep(0.75)
       else:
         # Generate, Save and Upload Unique Date Image
