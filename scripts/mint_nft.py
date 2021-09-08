@@ -24,7 +24,7 @@ with open(contract_file) as f:
   contract = json.load(f)
 
 # address of the deployed contract from deploy_contract.js
-contract_address = Web3.toChecksumAddress("0x3799E2fe97b43010fBe60E8922D3D3dCf2DdC2d7")
+contract_address = Web3.toChecksumAddress("0x459e4b6e8F02b89E1Ad93D52CD0FF6d9d88a6d7D")
 nft_contract = w3.eth.contract(abi=contract['abi'], address=contract_address)
 
 def mintNFT(tokenURI):
