@@ -31,10 +31,7 @@ def main():
       NFT_exists = check_if_NFT_exists(current_date)
       if NFT_exists == True:
         logging.info(f"NFT for {current_date} already exists. Moving on to the next one")
-        count += 1
-        current_date += timedelta(days=1)
         time.sleep(0.75)
-        continue
       else:
         # Generate, Save and Upload Unique Date Image
         image_name = create_and_save_image(current_date)
@@ -66,8 +63,8 @@ def main():
 
         logging.info(f'NFT #{count} done. {date_diff} left. Estimated time: { time_left / 60 / 60 } hours / {time_left / 60} minutes / { time_left } seconds')
 
-        count += 1
-        current_date += timedelta(days=1)
+      count += 1
+      current_date += timedelta(days=1)
 
 if __name__ == "__main__":
     startTime = time.time()
