@@ -6,6 +6,7 @@ metadata/
 __pycache__/
 .DS_Store
 node_modules/
+pinata_hashes.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
