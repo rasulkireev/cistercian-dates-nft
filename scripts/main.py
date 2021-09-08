@@ -28,8 +28,8 @@ def main():
     while current_date <= end_date:
       startTime = time.time()
 
-      response = check_if_NFT_exists(current_date)
-      if response['count'] > 0:
+      NFT_exists = check_if_NFT_exists(current_date)
+      if NFT_exists == True:
         logging.info(f"NFT for {current_date} already exists. Moving on to the next one")
         count += 1
         current_date += timedelta(days=1)

@@ -125,6 +125,16 @@ def check_if_NFT_exists(current_date):
     response = requests.get(
       PINATA_BASE_URL + ENDPOINT,
       headers=headers
-    )
+    ).json()
 
-    return response.json()
+    if response['count'] > 0:
+      rows = response['rows']
+      image_names = []
+      for row in rows:
+        image_names.append(row['metadata']['name'])
+      if image_name in image_names:
+        return True
+      else:
+        return False
+    else:
+      return False
