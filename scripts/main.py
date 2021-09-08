@@ -20,9 +20,9 @@ logging.basicConfig(level=logging.INFO)
 def main():
 
     project_root = get_project_root()
-    start_date = date(31,4,1)
+    start_date = date(32,4,1)
     current_date = start_date
-    end_date = date(31,4,2)
+    end_date = date(32,4,2)
 
     count = 1
     while current_date <= end_date:
@@ -54,14 +54,13 @@ def main():
           file.write(f"{{{current_date}: {response['IpfsHash']}}},")
 
         response = mintNFT(f"https://gateway.pinata.cloud/ipfs/{response['IpfsHash']}")
-        logging.info(f'NFT #{count} is minted. Transaction Address: {response["transactionHash"].hex()}')
 
         # estimating how long it will take to complete the rest
         executionTime = (time.time() - startTime)
         date_diff = (end_date - current_date).days
         time_left = (executionTime * date_diff)
 
-        logging.info(f'NFT #{count} done. {date_diff} left. Estimated time: { time_left / 60 / 60 } hours / {time_left / 60} minutes / { time_left } seconds')
+        logging.info(f'NFT #{count} done ({response["transactionHash"].hex()}). {date_diff} left. Estimated time: { time_left / 60 / 60 } hours / {time_left / 60} minutes / { time_left } seconds')
 
       count += 1
       current_date += timedelta(days=1)
