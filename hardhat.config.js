@@ -3,6 +3,7 @@
 */
 require('dotenv').config();
 require("@nomiclabs/hardhat-ethers");
+require('@openzeppelin/hardhat-upgrades');
 
 const { API_URL, PRIVATE_KEY } = process.env;
 
@@ -12,7 +13,7 @@ module.exports = {
    networks: {
      hardhat: {},
      matic_testnet: {
-        url: "https://rpc-mumbai.maticvigil.com",
+        url: API_URL,
         accounts: [`0x${PRIVATE_KEY}`]
      },
      rinkeby: {
