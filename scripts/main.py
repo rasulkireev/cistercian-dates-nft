@@ -20,9 +20,9 @@ logging.basicConfig(level=logging.INFO)
 def main():
 
     project_root = get_project_root()
-    start_date = date(56,10,1)
+    start_date = date(60,10,1)
     current_date = start_date
-    end_date = date(56,10,2)
+    end_date = date(60,10,2)
 
     count = 1
     while current_date <= end_date:
@@ -41,7 +41,8 @@ def main():
         # save response hash to a txt file
         with open(f"{project_root}/pinata_hashes.txt", 'a', encoding="utf-8") as file:
           file.write("\n")
-          file.write(response['IpfsHash'])
+          ipfs_Hash = response['IpfsHash']
+          file.write(f"{{'{current_date}': '{ipfs_Hash}', 'type': 'image'}},")
 
         # Generate, Save and Upload Metadata for Unique Image
         metadata_file_name = create_and_save_metadata_file(current_date, response)
@@ -52,7 +53,7 @@ def main():
         with open(f"{project_root}/pinata_hashes.txt", 'a', encoding="utf-8") as file:
           file.write("\n")
           ipfs_Hash = response['IpfsHash']
-          file.write(f"{{'{current_date}': '{ipfs_Hash}'}},")
+          file.write(f"{{'{current_date}': '{ipfs_Hash}', 'type': 'metadata'}},")
 
         response = mintNFT(f"https://gateway.pinata.cloud/ipfs/{response['IpfsHash']}")
 
