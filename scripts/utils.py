@@ -127,14 +127,17 @@ def check_if_NFT_exists(current_date):
       headers=headers
     ).json()
 
-    if response['count'] > 0:
-      rows = response['rows']
-      image_names = []
-      for row in rows:
-        image_names.append(row['metadata']['name'])
-      if image_name in image_names:
-        return True
+    try:
+      if response['count'] > 0:
+        rows = response['rows']
+        image_names = []
+        for row in rows:
+          image_names.append(row['metadata']['name'])
+        if image_name in image_names:
+          return True
+        else:
+          return False
       else:
         return False
-    else:
-      return False
+    except KeyError:
+      print(response)
