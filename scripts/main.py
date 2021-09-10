@@ -20,9 +20,9 @@ logging.basicConfig(level=logging.INFO)
 def main():
 
     project_root = get_project_root()
-    start_date = date(60,10,1)
+    start_date = date(345,1,16)
     current_date = start_date
-    end_date = date(60,10,2)
+    end_date = date(345,1,17)
 
     count = 1
     while current_date <= end_date:
@@ -31,7 +31,7 @@ def main():
       NFT_exists = check_if_NFT_exists(current_date)
       if NFT_exists == True:
         logging.info(f"NFT for {current_date} already exists.")
-        time.sleep(0.75)
+        time.sleep(1.5)
       else:
         # Generate, Save and Upload Unique Date Image
         image_name = create_and_save_image(current_date)
@@ -42,7 +42,7 @@ def main():
         with open(f"{project_root}/pinata_hashes.txt", 'a', encoding="utf-8") as file:
           file.write("\n")
           ipfs_Hash = response['IpfsHash']
-          file.write(f"{{'{current_date}': '{ipfs_Hash}', 'type': 'image'}},")
+          file.write(f"{{'date': '{current_date}', 'hash': '{ipfs_Hash}', 'type': 'image'}},")
 
         # Generate, Save and Upload Metadata for Unique Image
         metadata_file_name = create_and_save_metadata_file(current_date, response)
@@ -53,16 +53,16 @@ def main():
         with open(f"{project_root}/pinata_hashes.txt", 'a', encoding="utf-8") as file:
           file.write("\n")
           ipfs_Hash = response['IpfsHash']
-          file.write(f"{{'{current_date}': '{ipfs_Hash}', 'type': 'metadata'}},")
+          file.write(f"{{'date': {current_date}', 'hash': '{ipfs_Hash}', 'type': 'metadata'}},")
 
-        response = mintNFT(f"https://gateway.pinata.cloud/ipfs/{response['IpfsHash']}")
+        response = mintNFT(f"{os.getenv('PINATA_GATEWAY')}/ipfs/{response['IpfsHash']}")
 
         # estimating how long it will take to complete the rest
         executionTime = (time.time() - startTime)
         date_diff = (end_date - current_date).days
         time_left = (executionTime * date_diff)
 
-        logging.info(f'NFT #{count} done ({response["transactionHash"].hex()}). {date_diff} left. Estimated time: { time_left / 60 / 60 } hours / {time_left / 60} minutes / { time_left } seconds')
+        logging.info(f'NFT #{count} done ({response["transactionHash"].hex()}). {date_diff} left. Estimated time: { round(time_left / 60 / 60, 2) } hours / { round(time_left / 60, 2) } minutes / { round(time_left, 2) } seconds')
 
       count += 1
       current_date += timedelta(days=1)
