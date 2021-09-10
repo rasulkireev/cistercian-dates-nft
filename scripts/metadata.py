@@ -1,8 +1,12 @@
+import os
+from dotenv import load_dotenv
 from utils import (
   parse_date,
   save_metadata_file,
   ordinal
 )
+
+load_dotenv()
 
 def create_and_save_metadata_file(current_date, pinata_response):
     elements = parse_date(current_date)
@@ -15,7 +19,7 @@ def create_and_save_metadata_file(current_date, pinata_response):
     metadata.update({
       'name': f"{current_date.strftime('%B')} {day_of_the_month}, {current_date.strftime('%Y')}",
       'description': f'NFT for the {day_of_the_month} of { current_date.strftime("%B %Y") } in Cistercian numerals.',
-      'image': f"https://gateway.pinata.cloud/ipfs/{pinata_response['IpfsHash']}",
+      'image': f"{os.getenv('PINATA_GATEWAY')}/ipfs/{pinata_response['IpfsHash']}",
       'attributes': [
         {
           "trait_type": "Year",
