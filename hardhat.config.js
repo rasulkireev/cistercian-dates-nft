@@ -12,6 +12,10 @@ module.exports = {
    defaultNetwork: "rinkeby",
    networks: {
      hardhat: {},
+     polygon_mainnet: {
+        url: API_URL,
+        accounts: [`0x${PRIVATE_KEY}`]
+     },
      matic_testnet: {
         url: API_URL,
         accounts: [`0x${PRIVATE_KEY}`]
