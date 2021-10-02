@@ -1,3 +1,33 @@
+[tool.black]
+line-length = 79
+target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.github
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+include_trailing_comma = true
+line_length = 79
+multi_line_output = 3
+
 [tool.poetry]
 name = "cistercian-dates-nft"
 version = "0.1.0"
@@ -10,9 +40,12 @@ Pillow = "^8.3.2"
 eth-brownie = "^1.16.3"
 python-dotenv = "0.16.0"
 web3 = "^5.23.1"
+python-json-logger = "^2.0.2"
+pre-commit = "^2.15.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+pylint = "^2.11.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
