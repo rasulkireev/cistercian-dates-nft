@@ -9,6 +9,7 @@ node_modules/
 pinata_hashes.txt
 artifacts/
 cache/
+missing-dates.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
