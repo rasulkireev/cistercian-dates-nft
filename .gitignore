@@ -6,10 +6,14 @@ metadata/
 __pycache__/
 .DS_Store
 node_modules/
-pinata_hashes.txt
 artifacts/
 cache/
-missing_dates.txt
+missing-dates-dev.txt
+missing-dates.txt
+pinata-hashes.txt
+pinata-hashes-dev.txt
+tracking-dev.json
+tracking-prod.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

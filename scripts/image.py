@@ -1,13 +1,15 @@
+import logging
 import os
 
 from PIL import Image, ImageOps
-
-from .utils import (
+from utils import (
     get_project_root,
     parse_date,
     save_image,
     transparent_to_opaque_bg,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def get_number_decomposition(number_string):
@@ -94,8 +96,11 @@ def create_and_save_image(current_date):
             number_string_2_integers(decomposition)
         )
         images.append(result)
+
+    logger.info("Creating Image")
     final_image = compose_final_image(images)
 
+    logger.info("Saving Image")
     save_image("images", final_image, image_name)
 
     return image_name

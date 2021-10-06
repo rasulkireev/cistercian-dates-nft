@@ -1,14 +1,17 @@
+import logging
 import os
 from datetime import date
 
 from dotenv import load_dotenv
-
-from .utils import ordinal, parse_date, save_metadata_file
+from utils import ordinal, parse_date, save_metadata_file
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
 
 def create_and_save_metadata_file(current_date: date, pinata_response: str):
+    logger.info("Creating Metadata File")
     elements = parse_date(current_date)
     file_name = "-".join(elements) + ".json"
 
@@ -18,14 +21,15 @@ def create_and_save_metadata_file(current_date: date, pinata_response: str):
 
     metadata.update(
         {
-            "name": f"""\
-{current_date.strftime('%B')} \
-{day_of_the_month}, \
-{current_date.strftime('%Y')}""",
-            "description": f"""\
-NFT for the {day_of_the_month} of \
-{ current_date.strftime("%B %Y") } \
-in Cistercian numerals.""",
+            "name": (
+                f"{current_date.strftime('%B')} "
+                f"{day_of_the_month}, "
+                f"{current_date.strftime('%Y')}"
+            ),
+            "description": (
+                f"NFT for the {day_of_the_month} of "
+                f"{ current_date.strftime('%B %Y') } in Cistercian numerals."
+            ),
             "image": f"{os.getenv('PINATA_GATEWAY')}/ipfs/{pinata_response['IpfsHash']}",
             "attributes": [
                 {"trait_type": "Year", "value": current_date.strftime("%Y")},
@@ -35,6 +39,7 @@ in Cistercian numerals.""",
         }
     )
 
+    logger.info("Saving Metadata File")
     save_metadata_file(metadata, file_name)
 
     return file_name

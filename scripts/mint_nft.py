@@ -8,11 +8,12 @@ import os
 import time
 
 from dotenv import load_dotenv
+from utils import get_project_root
 from web3 import Web3
 from web3._utils.threads import Timeout
 from web3.exceptions import TimeExhausted
 
-from .utils import get_project_root
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -40,6 +41,8 @@ nft_contract = w3.eth.contract(abi=contract["abi"], address=contract_address)
 
 def mintNFT(tokenURI):
 
+    logger.info("Beggining the Minting Process")
+
     for attempt_num in range(10):
 
         tx = {
@@ -57,33 +60,40 @@ def mintNFT(tokenURI):
             ),
         }
 
+        logging.info("Building Transaction")
         built_txn = nft_contract.functions.mintNFT(
             PUBLIC_KEY, tokenURI
         ).buildTransaction(tx)
+
+        logging.info("Updating Transaction Data")
         built_txn["data"] = nft_contract.encodeABI(
             fn_name="mintNFT", args=[PUBLIC_KEY, tokenURI]
         )
+
+        logging.info("Signing Transaction")
         signed_txn = w3.eth.account.sign_transaction(
             built_txn, private_key=PRIVATE_KEY
         )
 
         try:
+            logging.info("Sending Signed Transactions (Raw)")
             tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
             break
         except ValueError as e:
             logging.error(
-                f"""
-        Value Error: {e}.
-        (Attempt #{attempt_num}).
-        Trying once more.
-        Attempted transaction: {tx}
-    """
+                (
+                    f"Value Error: {e}."
+                    f"(Attempt #{attempt_num})."
+                    f"Trying once more."
+                    f"Attempted transaction: {tx}"
+                )
             )
             time.sleep(1.5)
             continue
 
     for attempt_num in range(10):
         try:
+            logging.info("Waiting for Transaction Receipt")
             response = w3.eth.wait_for_transaction_receipt(
                 tx_hash, timeout=1200
             )
@@ -94,4 +104,4 @@ def mintNFT(tokenURI):
             )
             continue
 
-    return response
+    return tx, response

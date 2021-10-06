@@ -7,12 +7,11 @@ LOGGING_CONFIG = {
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": "%(asctime)s:%(name)s:%(process)d:%(lineno)d "
-            "%(levelname)s %(message)s",  #  What to add in the message
+            "format": "%(asctime)s:%(name)s:%(process)d:%(lineno)d ",  #  What to add in the message
             "datefmt": "%Y-%m-%d %H:%M:%S",  # How to display dates
         },
         "simple": {
-            "format": "%(message)s",  # As simple as possible!
+            "format": "%(levelname)s %(message)s",
         },
         "json": {
             "()": "pythonjsonlogger.jsonlogger.JsonFormatter",  # The class to instantiate!
@@ -61,19 +60,19 @@ LOGGING_CONFIG = {
             "stream": "ext://sys.stdout",
         },
     },
-    "loggers": {
-        "scripts": {  # The name of the logger, this SHOULD match your module!
-            "level": "INFO",  # FILTER: only INFO logs onwards from "tryceratops" logger
-            "handlers": [
-                "verbose_output",  # Refer the handler defined above
-            ],
-        },
-    },
+    # "loggers": {
+    #     "main": {
+    #         "level": "INFO",
+    #         "handlers": [
+    #             "verbose_output",
+    #         ],
+    #     },
+    # },
     "root": {
         "level": "INFO",
         "handlers": [
-            "logfile",  # Refer the handler defined above
-            "json",  # Refer the handler defined above
+            "logfile",
+            "verbose_output",
         ],
     },
 }
